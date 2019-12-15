@@ -1,6 +1,6 @@
 import requests
 from lxml import html
-import bs4 as bs
+from bs4 import BeautifulSoup as bs
 import getpass
 
 Username = input("Username: ")
@@ -8,11 +8,11 @@ Password = getpass.getpass()
 
 redditURL = "https://www.reddit.com/"
 
+# creating session
+print("creating session")
+session_requests = requests.session()
 
 def login(Username, Password):
-    # creating session
-    print("creating session")
-    session_requests = requests.session()
 
     loginURL = "https://www.reddit.com/login/"
     result = session_requests.get(loginURL)
@@ -37,8 +37,12 @@ def login(Username, Password):
         headers = dict(referer=loginURL)
     )
 
-    session_requests.get(redditURL)
 
-    print(result.ok)
+def getHeaders():
+    result = session_requests.get(redditURL)
+    soup = bs(result.text, "html.parser")
+
+    print(soup.find_all("h3", class_="_eYtD2XCVieq6emjKBH3m"), result.ok)
 
 login(Username, Password)
+getHeaders()
